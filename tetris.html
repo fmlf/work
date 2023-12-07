@@ -74,6 +74,8 @@
     });
   }
 
+  let score =0;
+
   function getRandomBlock() {
     const randomColor = getRandomColor();
     const randomBlockShape = getRandomBlockShape();
@@ -193,6 +195,8 @@
     function checkRows() {
       for (let i = rows - 1; i >= 0; i--) {
         if (board[i].every(cell => cell !== 0)) {
+          score += 100;
+          score(score);
           board.splice(i, 1);
           board.unshift(Array(columns).fill(0));
           blocks.forEach(block=>{
@@ -252,7 +256,7 @@
     document.addEventListener('keydown', handleKeyPress);
 
     function handleKeyPress(event) {
-      
+
       const currentBlock = blocks[blocks.length - 1];
       switch (event.key) {
         case 'ArrowLeft':
@@ -270,9 +274,13 @@
         case 'Space':
           rotateBlock(currentBlock);
           break;
-      }if(isGameOver()) return;
-    
+      }
+      if(isGameOver()) return;
     }
+
+    
+
+
 
     function isGameOver() {
       const topRow = blocks[blocks.length-1].row;
@@ -281,8 +289,9 @@
 
     setInterval(() => {
       if(isGameOver()){
-        console.log("Game Over");
+        console.log("<p>Game Over. Final Score:</p>", score);
         return;
+
       }
       const currentBlock = blocks[blocks.length - 1];
       if (!checkCollision(currentBlock, 1, 0)) {
@@ -296,7 +305,6 @@
 
     draw();
   </script>
-
 </body>
 </html>
 
