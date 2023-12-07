@@ -63,6 +63,21 @@
         });
       });
     }
+
+     function drawBlock() {
+      currentBlock.shape.forEach((row, rowIndex) => {
+        row.forEach((cell, colIndex) => {
+          if (cell) {
+            context.fillStyle = 'blue';
+            context.fillRect((currentBlock.col + colIndex) * block, (currentBlock.row + rowIndex) * block, block, block);
+            context.strokeStyle = 'white';
+            context.strokeRect((currentBlock.col + colIndex) * block, (currentBlock.row + rowIndex) * block, block, block);
+          }
+        });
+      });
+    }
+
+    
     function draw() {
       drawBoard();
       requestAnimationFrame(draw);
