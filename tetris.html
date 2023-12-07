@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang = "en">
+<html lang="en">
 <head>
-<meta charset = "utf-8">
-<meta name = "viewport" content = "width = device-width, initial-scale=1.0">
-<title>Tetirs Game</title>
- <style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tetris Game</title>
+  <style>
     body {
       display: flex;
       justify-content: center;
@@ -22,7 +22,7 @@
   </style>
 </head>
 <body>
-	<canvas id="tetrisCanvas" width="300" height="600"></canvas>
+  <canvas id="tetrisCanvas" width="300" height="600"></canvas>
 
   <script>
     const canvas = document.getElementById('tetrisCanvas');
@@ -30,32 +30,23 @@
     const block = 30;
     const rows = canvas.height / block;
     const columns = canvas.width / block;
-	const board = Array.from({ length: rows }, 
-		() => Array(columns).fill(0));
+    const board = Array.from({ length: rows }, () => Array(columns).fill(0));
 
-	
-	const blockShape = [
-      [1, 1, 1, 1],
-      [1, 1, 1, 1],
-      [1, 1, 1, 1],
-      [1, 1, 1, 1]
+    const blockShapes = [
+      [[1, 1, 1], [1, 1, 1], [1, 1, 1]], // Square
+      [[1, 1, 1, 1]],                   // Line
+      [[1, 1, 1], [0, 1, 0]],           // T-shape
+      [[1, 1], [1, 1]],                 // Box
     ];
 
-    
-    let currentBlock = {
-      row: 0,
-      col: 0,
-      shape: blockShape
-    };
-
-
+    const blocks = [];
 
     function drawBoard() {
       context.clearRect(0, 0, canvas.width, canvas.height);
       board.forEach((row, rowIndex) => {
         row.forEach((cell, colIndex) => {
           if (cell) {
-            context.fillStyle = 'cyan';
+            context.fillStyle = cell.color;
             context.fillRect(colIndex * block, rowIndex * block, block, block);
             context.strokeStyle = 'white';
             context.strokeRect(colIndex * block, rowIndex * block, block, block);
@@ -64,41 +55,54 @@
       });
     }
 
-     function drawBlock() {
-      currentBlock.shape.forEach((row, rowIndex) => {
+    function drawBlocks() {
+      blocks.forEach(drawBlock);
+    }
+
+    function drawBlock(block) {
+      block.shape.forEach((row, rowIndex) => {
         row.forEach((cell, colIndex) => {
           if (cell) {
-            context.fillStyle = 'blue';
-            context.fillRect((currentBlock.col + colIndex) * block, (currentBlock.row + rowIndex) * block, block, block);
+            context.fillStyle = block.color;
+            context.fillRect(
+              (block.col + colIndex) * block.size,
+              (block.row + rowIndex) * block.size,
+              block.size, block.size
+            );
             context.strokeStyle = 'white';
-            context.strokeRect((currentBlock.col + colIndex) * block, (currentBlock.row + rowIndex) * block, block, block);
+            context.strokeRect(
+              (block.col + colIndex) * block.size,
+              (block.row + rowIndex) * block.size,
+              block.size, block.size
+            );
           }
         });
       });
     }
 
-    function moveBlock(direction) {
-      const isCollision = checkCollision(0, direction);
+    function moveBlock(block, direction) {
+      const isCollision = checkCollision(block, 0, direction);
       if (!isCollision) {
-        currentBlock.col += direction;
+        block.col += direction;
       }
     }
 
-     function rotateBlock() {
-      const originalShape = currentBlock.shape;
-      currentBlock.shape = transposeMatrix(currentBlock.shape);
-      if (checkCollision(0, 0)) {
-        currentBlock.shape = originalShape;
+    function rotateBlock(block) {
+      const originalShape = block.shape;
+      block.shape = transposeMatrix(block.shape);
+      if (checkCollision(block, 0, 0)) {
+        block.shape = originalShape;
       }
     }
 
-     function checkCollision(rowOffset, colOffset) {
-      for (let i = 0; i < currentBlock.shape.length; i++) {
-        for (let j = 0; j < currentBlock.shape[i].length; j++) {
+    function checkCollision(block, rowOffset, colOffset) {
+      for (let i = 0; i < block.shape.length; i++) {
+        for (let j = 0; j < block.shape[i].length; j++) {
           if (
-            currentBlock.shape[i][j] &&
-            (board[currentBlock.row + rowOffset + i] &&
-              board[currentBlock.row + rowOffset + i][currentBlock.col + colOffset + j]) !== 0
+            block.shape[i][j] &&
+            (board[block.row + rowOffset + i] &&
+              board[block.row + rowOffset + i]
+              [block.col + colOffset + j]) !== 0
           ) {
             return true;
           }
@@ -111,11 +115,11 @@
       return matrix[0].map((_, i) => matrix.map(row => row[i]));
     }
 
-    function placeBlock() {
-      currentBlock.shape.forEach((row, rowIndex) => {
+    function placeBlock(block) {
+      block.shape.forEach((row, rowIndex) => {
         row.forEach((cell, colIndex) => {
           if (cell) {
-            board[currentBlock.row + rowIndex][currentBlock.col + colIndex] = 1;
+            board[block.row + rowIndex][block.col + colIndex] = { color: block.color };
           }
         });
       });
@@ -133,54 +137,64 @@
     }
 
     function newBlock() {
-      currentBlock = {
+      const randomShape = blockShapes[Math.floor(Math.random() * blockShapes.length)];
+      const randomColor = getRandomColor();
+      blocks.push({
         row: 0,
-        col: Math.floor(columns / 2) - Math.floor(blockShape[0].length / 2),
-        shape: blockShape
-      };
+        col: Math.floor(columns / 2) - Math.floor(randomShape[0].length / 2),
+        shape: randomShape,
+        color: randomColor,
+        size: block
+      });
     }
 
-
+    function getRandomColor() {
+      const colors = ['#ff4500', '#ffd700', '#8a2be2', '#00ced1', '#ff1493'];
+      return colors[Math.floor(Math.random() * colors.length)];
+    }
 
     function draw() {
       drawBoard();
-      drawBlock();
+      drawBlocks();
       requestAnimationFrame(draw);
     }
 
     document.addEventListener('keydown', handleKeyPress);
 
     function handleKeyPress(event) {
+      const currentBlock = blocks[blocks.length - 1];
       switch (event.key) {
         case 'ArrowLeft':
-          moveBlock(-1);
+          moveBlock(currentBlock, -1);
           break;
         case 'ArrowRight':
-          moveBlock(1);
+          moveBlock(currentBlock, 1);
           break;
         case 'ArrowDown':
-          if (!checkCollision(1, 0)) {
+          if (!checkCollision(currentBlock, 1, 0)) {
             currentBlock.row++;
           }
           break;
         case 'ArrowUp':
-          rotateBlock();
+          rotateBlock(currentBlock);
           break;
       }
     }
 
-     setInterval(() => {
-      if (!checkCollision(1, 0)) {
+    setInterval(() => {
+      const currentBlock = blocks[blocks.length - 1];
+      if (!checkCollision(currentBlock, 1, 0)) {
         currentBlock.row++;
       } else {
-        placeBlock();
+        placeBlock(currentBlock);
       }
-    }, 1000);
+    }, 500);
 
+    newBlock();
 
-    draw();  
-
+    draw();
   </script>
 
 </body>
 </html>
+
