@@ -88,12 +88,13 @@
     }
 
     function rotateBlock(block) {
-      const originalShape = block.shape;
+      block.shape = rotateMatrix(block.shape);
+      /*const originalShape = block.shape;
       block.shape = transposeMatrix(block.shape);
       if (checkCollision(block, 0, 0)) {
-        block.shape = originalShape;
+        block.shape = originalShape;}*/
       }
-    }
+    
 
     function checkCollision(block, rowOffset, colOffset) {
       for (let i = 0; i < block.shape.length; i++) {
@@ -113,6 +114,10 @@
 
     function transposeMatrix(matrix) {
       return matrix[0].map((_, i) => matrix.map(row => row[i]));
+    }
+
+    function rotateMatrix(matrix){
+      return matrix[0].map((_,i)=> matrix.map(row=>row[i])).reverse();
     }
 
     function placeBlock(block) {
@@ -176,6 +181,7 @@
           }
           break;
         case 'ArrowUp':
+        case 'Space':
           rotateBlock(currentBlock);
           break;
       }
