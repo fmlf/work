@@ -148,6 +148,28 @@
       requestAnimationFrame(draw);
     }
 
+    document.addEventListener('keydown', handleKeyPress);
+
+    function handleKeyPress(event) {
+      switch (event.key) {
+        case 'ArrowLeft':
+          moveBlock(-1);
+          break;
+        case 'ArrowRight':
+          moveBlock(1);
+          break;
+        case 'ArrowDown':
+          if (!checkCollision(1, 0)) {
+            currentBlock.row++;
+          }
+          break;
+        case 'ArrowUp':
+          rotateBlock();
+          break;
+      }
+    }
+
+
     draw();  
 
   </script>
