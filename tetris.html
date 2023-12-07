@@ -169,6 +169,14 @@
       }
     }
 
+     setInterval(() => {
+      if (!checkCollision(1, 0)) {
+        currentBlock.row++;
+      } else {
+        placeBlock();
+      }
+    }, 1000);
+
 
     draw();  
 
