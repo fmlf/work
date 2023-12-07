@@ -33,6 +33,23 @@
 	const board = Array.from({ length: rows }, 
 		() => Array(columns).fill(0));
 
+	
+	const blockShape = [
+      [1, 1, 1, 1],
+      [1, 1, 1, 1],
+      [1, 1, 1, 1],
+      [1, 1, 1, 1]
+    ];
+
+    
+    let currentBlock = {
+      row: 0,
+      col: 0,
+      shape: blockShape
+    };
+
+
+
     function drawBoard() {
       context.clearRect(0, 0, canvas.width, canvas.height);
       board.forEach((row, rowIndex) => {
@@ -46,3 +63,14 @@
         });
       });
     }
+    function draw() {
+      drawBoard();
+      requestAnimationFrame(draw);
+    }
+
+    draw();  
+
+  </script>
+
+</body>
+</html>
