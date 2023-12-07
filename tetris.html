@@ -30,3 +30,19 @@
     const block = 30;
     const rows = canvas.height / block;
     const columns = canvas.width / block;
+	const board = Array.from({ length: rows }, 
+		() => Array(columns).fill(0));
+
+    function drawBoard() {
+      context.clearRect(0, 0, canvas.width, canvas.height);
+      board.forEach((row, rowIndex) => {
+        row.forEach((cell, colIndex) => {
+          if (cell) {
+            context.fillStyle = 'cyan';
+            context.fillRect(colIndex * block, rowIndex * block, block, block);
+            context.strokeStyle = 'white';
+            context.strokeRect(colIndex * block, rowIndex * block, block, block);
+          }
+        });
+      });
+    }
