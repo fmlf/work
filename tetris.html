@@ -196,7 +196,7 @@
       for (let i = rows - 1; i >= 0; i--) {
         if (board[i].every(cell => cell !== 0)) {
           score += 100;
-          score(score);
+          console.log("score:",score);
           board.splice(i, 1);
           board.unshift(Array(columns).fill(0));
           blocks.forEach(block=>{
@@ -205,6 +205,7 @@
           }
         });
         
+        blocks = blocks.filter(block => block.row !==i);
         }
       }
     }
@@ -284,13 +285,16 @@
 
     function isGameOver() {
       const topRow = blocks[blocks.length-1].row;
-      return topRow <= 0;
-    }
+      topRow <= 0
+         
+         return;
+      }
+    
 
     setInterval(() => {
       if(isGameOver()){
-        console.log("<p>Game Over. Final Score:</p>", score);
-        return;
+        console.log("Game Over. Final Score:", score);
+                return;
 
       }
       const currentBlock = blocks[blocks.length - 1];
