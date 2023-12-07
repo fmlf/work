@@ -92,6 +92,21 @@
       }
     }
 
+     function checkCollision(rowOffset, colOffset) {
+      for (let i = 0; i < currentBlock.shape.length; i++) {
+        for (let j = 0; j < currentBlock.shape[i].length; j++) {
+          if (
+            currentBlock.shape[i][j] &&
+            (board[currentBlock.row + rowOffset + i] &&
+              board[currentBlock.row + rowOffset + i][currentBlock.col + colOffset + j]) !== 0
+          ) {
+            return true;
+          }
+        }
+      }
+      return false;
+    }
+
 
     function draw() {
       drawBoard();
