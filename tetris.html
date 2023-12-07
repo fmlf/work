@@ -21,3 +21,12 @@
     }
   </style>
 </head>
+<body>
+	<canvas id="tetrisCanvas" width="300" height="600"></canvas>
+
+  <script>
+    const canvas = document.getElementById('tetrisCanvas');
+    const context = canvas.getContext('2d');
+    const block = 30;
+    const rows = canvas.height / block;
+    const columns = canvas.width / block;
