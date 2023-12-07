@@ -77,9 +77,17 @@
       });
     }
 
-    
+    function moveBlock(direction) {
+      const isCollision = checkCollision(0, direction);
+      if (!isCollision) {
+        currentBlock.col += direction;
+      }
+    }
+
+
     function draw() {
       drawBoard();
+      drawBlock();
       requestAnimationFrame(draw);
     }
 
