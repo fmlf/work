@@ -19,10 +19,25 @@
     canvas {
       border: 2px solid white;
     }
+
+    #nextBlockContainer{
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 20px;
+    }
+
+    #nextBlockCanvas{
+      border: 2px solid white;
+    }
   </style>
 </head>
 <body>
   <canvas id="tetrisCanvas" width="300" height="600"></canvas>
+  <div id = "nextBlockContainer">
+    <h3>Next Block</h3>
+    <canvas id = "nextBlockCanvas" width="100" height="100"></canvas>
+  </div>
 
   <script>
     const canvas = document.getElementById('tetrisCanvas');
@@ -31,6 +46,10 @@
     const rows = canvas.height / block;
     const columns = canvas.width / block;
     const board = Array.from({ length: rows }, () => Array(columns).fill(0));
+    const nextBlockCanvas = document.getElementById('nextBlockCanvas');
+    const nextBlockContext = nextBlockCanvas.getContext('2d');
+    
+
 
     const blockShapes = [
       [[1, 1, 1], [1, 1, 1], [1, 1, 1]], // Square
@@ -40,6 +59,45 @@
     ];
 
     const blocks = [];
+
+    function drawNextBlock(nextBlock){
+      nextBlockContext.clearRect(0, 0, nextBlockCanvas.width, nextBlockCanvas.height);
+    nextBlock.shape.forEach((row, rowIndex) => {
+      row.forEach((cell, colIndex) => {
+        if (cell) {
+          nextBlockContext.fillStyle = nextBlock.color;
+          nextBlockContext.fillRect(colIndex * block, rowIndex * block, block, block);
+          nextBlockContext.strokeStyle = 'white';
+          nextBlockContext.strokeRect(colIndex * block, rowIndex * block, block, block);
+        }
+      });
+    });
+  }
+
+  function getRandomBlock() {
+    const randomColor = getRandomColor();
+    const randomBlockShape = getRandomBlockShape();
+    return {
+      row: 0,
+      col: Math.floor(columns / 2) - Math.floor(randomBlockShape[0].length / 2),
+      shape: randomBlockShape,
+      color: randomColor,
+      size: block
+    };
+  }
+
+
+  function getRandomBlockShape(){
+    const possibleBlockShapes = [
+      [[1, 1, 1], [1, 1, 1], [1, 1, 1]], // Square
+      [[1, 1, 1, 1]],                   // Line
+      [[1, 1, 1], [0, 1, 0]],           // T-shape
+      [[1, 1], [1, 1]]          //box
+      ];                 
+
+      const randomIndex = Math.floor(Math.random()*possibleBlockShapes.length);
+      return possibleBlockShapes[randomIndex];
+  }
 
     function drawBoard() {
       context.clearRect(0, 0, canvas.width, canvas.height);
@@ -150,13 +208,16 @@
     function newBlock() {
       const randomShape = blockShapes[Math.floor(Math.random() * blockShapes.length)];
       const randomColor = getRandomColor();
-      blocks.push({
+      //const currentBlock = getRandomBlock();
+      nextBlock=getRandomBlock();
+      drawNextBlock(nextBlock);
+      blocks.push(nextBlock);/*({
         row: 0,
         col: Math.floor(columns / 2) - Math.floor(randomShape[0].length / 2),
         shape: randomShape,
         color: randomColor,
         size: block
-      });
+      });*/
     }
 
     function getRandomColor() {
@@ -164,11 +225,29 @@
       return colors[Math.floor(Math.random() * colors.length)];
     }
 
+    let nextBlock;
+
     function draw() {
+      context.clearRect(0,0,canvas.width, canvas.height);
       drawBoard();
       drawBlocks();
       requestAnimationFrame(draw);
     }
+
+    function drawNextBlock(nextBlock){
+      nextBlockContext.clearRect(0, 0, nextBlockCanvas.width, nextBlockCanvas.height);
+  nextBlock.shape.forEach((row, rowIndex) => {
+    row.forEach((cell, colIndex) => {
+      if (cell) {
+        nextBlockContext.fillStyle = nextBlock.color;
+        nextBlockContext.fillRect(colIndex * block, rowIndex * block, block, block);
+        nextBlockContext.strokeStyle = 'white';
+        nextBlockContext.strokeRect(colIndex * block, rowIndex * block, block, block);
+      }
+    });
+  });
+}
+    
 
     document.addEventListener('keydown', handleKeyPress);
 
