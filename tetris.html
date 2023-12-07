@@ -137,6 +137,12 @@
         if (board[i].every(cell => cell !== 0)) {
           board.splice(i, 1);
           board.unshift(Array(columns).fill(0));
+          blocks.forEach(block=>{
+            if (block.row<i){
+              block.row++;
+          }
+        });
+        
         }
       }
     }
