@@ -132,6 +132,15 @@
       }
     }
 
+    function newBlock() {
+      currentBlock = {
+        row: 0,
+        col: Math.floor(columns / 2) - Math.floor(blockShape[0].length / 2),
+        shape: blockShape
+      };
+    }
+
+
 
     function draw() {
       drawBoard();
