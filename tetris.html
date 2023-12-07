@@ -252,6 +252,7 @@
     document.addEventListener('keydown', handleKeyPress);
 
     function handleKeyPress(event) {
+      
       const currentBlock = blocks[blocks.length - 1];
       switch (event.key) {
         case 'ArrowLeft':
@@ -269,10 +270,20 @@
         case 'Space':
           rotateBlock(currentBlock);
           break;
-      }
+      }if(isGameOver()) return;
+    
+    }
+
+    function isGameOver() {
+      const topRow = blocks[blocks.length-1].row;
+      return topRow <= 0;
     }
 
     setInterval(() => {
+      if(isGameOver()){
+        console.log("Game Over");
+        return;
+      }
       const currentBlock = blocks[blocks.length - 1];
       if (!checkCollision(currentBlock, 1, 0)) {
         currentBlock.row++;
