@@ -107,6 +107,22 @@
       return false;
     }
 
+    function transposeMatrix(matrix) {
+      return matrix[0].map((_, i) => matrix.map(row => row[i]));
+    }
+
+    function placeBlock() {
+      currentBlock.shape.forEach((row, rowIndex) => {
+        row.forEach((cell, colIndex) => {
+          if (cell) {
+            board[currentBlock.row + rowIndex][currentBlock.col + colIndex] = 1;
+          }
+        });
+      });
+      checkRows();
+      newBlock();
+    }
+
 
     function draw() {
       drawBoard();
