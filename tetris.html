@@ -84,6 +84,14 @@
       }
     }
 
+     function rotateBlock() {
+      const originalShape = currentBlock.shape;
+      currentBlock.shape = transposeMatrix(currentBlock.shape);
+      if (checkCollision(0, 0)) {
+        currentBlock.shape = originalShape;
+      }
+    }
+
 
     function draw() {
       drawBoard();
